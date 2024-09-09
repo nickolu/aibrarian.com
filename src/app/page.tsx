@@ -1,95 +1,93 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+
+import { useState } from "react";
+import {
+  TextField,
+  Button,
+  Typography,
+  Container,
+  Box,
+  ThemeProvider,
+  CssBaseline,
+} from "@mui/material";
+import BookRecommendationTabs from "./components/BookRecommendationTabs";
+import { Book } from "./types";
+import theme from "./theme";
+import "./globals.css";
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [input, setInput] = useState("");
+  const [recommendedBooks, setRecommendedBooks] = useState<Book[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      setIsLoading(true);
+      const res = await fetch("/api/generateBookRecommendations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ input }),
+      });
+      const data = await res.json();
+      if (data.books) {
+        setRecommendedBooks(data.books);
+      } else {
+        setError("Unable to generate recommendations");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setError("Unable to generate recommendations");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Container maxWidth="md">
+        <Box sx={{ my: 4 }}>
+          <Typography variant="h1" component="h1" gutterBottom>
+            What problem can I help you solve?
+          </Typography>
+          <form onSubmit={handleSubmit}>
+            <TextField
+              fullWidth
+              multiline
+              rows={4}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Type your message here"
+              variant="outlined"
+              margin="normal"
             />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={isLoading}
+              sx={{ mt: 2 }}
+            >
+              {isLoading ? "Loading..." : "Send"}
+            </Button>
+          </form>
+          <Box sx={{ mt: 4 }}>
+            {recommendedBooks?.length > 0 && (
+              <BookRecommendationTabs
+                recommendedBooks={recommendedBooks}
+                input={input}
+              />
+            )}
+            {error && (
+              <Typography color="error" sx={{ mt: 2 }}>
+                {error}
+              </Typography>
+            )}
+          </Box>
+        </Box>
+      </Container>
+    </ThemeProvider>
   );
 }
