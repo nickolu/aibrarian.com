@@ -29,6 +29,7 @@ please only include valid json in your response and no other comments and limit 
 };
 
 export async function POST(request: Request) {
+  console.log("request", request);
   try {
     const { input } = await request.json();
     console.log("input", input);
@@ -66,6 +67,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(validJson);
   } catch (error) {
+    console.error(error);
     return NextResponse.json({ error: "An error occurred" }, { status: 500 });
   }
 }
