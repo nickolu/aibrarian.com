@@ -23,11 +23,6 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setProblemText(input);
-  };
-
   const fetchRecommendations = useCallback(async () => {
     setRecommendedBooks([]);
     try {
