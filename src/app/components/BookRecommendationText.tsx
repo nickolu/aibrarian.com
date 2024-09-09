@@ -1,6 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
 import { Book } from "@/app/types";
-import Markdown from "react-markdown";
 import { Box, CircularProgress, Grid2 as Grid } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import MuiMarkdown from "mui-markdown";
