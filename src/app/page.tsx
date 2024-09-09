@@ -25,6 +25,7 @@ export default function Home() {
 
   const fetchRecommendations = useCallback(async () => {
     setRecommendedBooks([]);
+    setError(null);
     try {
       setIsLoading(true);
 
@@ -83,7 +84,7 @@ export default function Home() {
               rows={4}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Type your message here"
+              placeholder="Describe your problem here"
               variant="outlined"
               margin="normal"
             />

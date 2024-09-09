@@ -5,12 +5,10 @@ const theme = createTheme({
     primary: {
       main: "#3a506b", // Deep blue-gray
       light: "#5c7a99",
-      dark: "#1c2b3a",
     },
     secondary: {
       main: "#c17767", // Muted coral
       light: "#d49c8f",
-      dark: "#9e5142",
     },
     background: {
       default: "#f8f9fa", // Light gray
