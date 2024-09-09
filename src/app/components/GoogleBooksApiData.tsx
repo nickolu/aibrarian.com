@@ -45,7 +45,6 @@ export default function GoogleBooksApiData({ book }: { book: Book }) {
 
         const data = await res.json();
         setResponse(data);
-        console.log(data);
         setLoading(false);
       } catch (error) {
         console.error("Error:", error);
@@ -62,9 +61,9 @@ export default function GoogleBooksApiData({ book }: { book: Book }) {
   return (
     <Grid container>
       <Grid size={{ xs: 12 }}>
-        {loading ? (
-          <CircularProgress />
-        ) : response && response.items && response.items.length > 0 ? (
+        {loading ? null : response &&
+          response.items &&
+          response.items.length > 0 ? (
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography>

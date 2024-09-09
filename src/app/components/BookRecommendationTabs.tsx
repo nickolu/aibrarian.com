@@ -35,10 +35,10 @@ function CustomTabPanel(props: TabPanelProps) {
 
 export default function BookRecommendationTabs({
   recommendedBooks,
-  input,
+  problemText,
 }: {
   recommendedBooks: Book[];
-  input: string;
+  problemText: string;
 }) {
   const [tabValue, setTabValue] = useState(0);
 
@@ -50,6 +50,7 @@ export default function BookRecommendationTabs({
     <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
       <Typography variant="h4" gutterBottom>
         The ai-brarian has found the following books to solve your problem:
+        {problemText}
       </Typography>
       <Box sx={{ width: "100%", bgcolor: "background.paper" }}>
         <Tabs
@@ -70,7 +71,7 @@ export default function BookRecommendationTabs({
         </Tabs>
         {recommendedBooks.map((book, index) => (
           <CustomTabPanel key={book.title} value={tabValue} index={index}>
-            <BookRecommendationText book={book} input={input} />
+            <BookRecommendationText book={book} problemText={problemText} />
             <GoogleBooksApiData book={book} />
           </CustomTabPanel>
         ))}

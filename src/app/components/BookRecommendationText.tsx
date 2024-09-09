@@ -43,10 +43,10 @@ const MarkdownContainer = styled(Box)`
 
 export default function BookRecommendationText({
   book,
-  input,
+  problemText,
 }: {
   book: Book;
-  input: string;
+  problemText: string;
 }) {
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
@@ -55,8 +55,13 @@ export default function BookRecommendationText({
     const bookKey = `${book.title}_${book.author}`
       .replace(/\s+/g, "_")
       .toLowerCase();
-    return `book_recommendation_${bookKey}_${input}`;
-  }, [book.title, book.author, input]);
+
+    const problemTextKey = problemText
+      .substring(0, 12)
+      .replace(/\s+/g, "_")
+      .toLowerCase();
+    return `book_recommendation_${bookKey}_${problemTextKey}`;
+  }, [book.title, book.author, problemText]);
 
   const fetchRecommendationText = useCallback(
     async (e?: React.FormEvent) => {
@@ -79,14 +84,14 @@ export default function BookRecommendationText({
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             messages: [
-              { role: "user", content: bookSolutionPrompt(book, input) },
+              { role: "user", content: bookSolutionPrompt(book, problemText) },
             ],
           }),
         });
 
         const data = await res.json();
         setResponse(data.response.choices[0].message.content);
-        console.log(data.response.choices[0].message.content);
+
         // Strip backticks from the start and end of the response
         const strippedResponse =
           data.response.choices[0].message.content.replace(/^```|```$/g, "");
@@ -103,7 +108,7 @@ export default function BookRecommendationText({
         setResponse("An error occurred while fetching the response.");
       }
     },
-    [book, input, getCacheKey]
+    [book, problemText, getCacheKey]
   );
 
   useEffect(() => {
@@ -114,7 +119,9 @@ export default function BookRecommendationText({
     <Grid container sx={{ marginBottom: 2 }}>
       <Grid size={{ xs: 12 }}>
         {loading ? (
-          <CircularProgress />
+          <Box display="flex" justifyContent="center" alignItems="center">
+            <CircularProgress />
+          </Box>
         ) : (
           <MarkdownContainer>
             <MuiMarkdown>{response}</MuiMarkdown>

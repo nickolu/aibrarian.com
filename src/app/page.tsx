@@ -27,10 +27,11 @@ export default function Home() {
     setRecommendedBooks([]);
     try {
       setIsLoading(true);
+
       const res = await fetch("/api/generateBookRecommendations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ problemText }),
+        body: JSON.stringify({ input: problemText }),
       });
       const data = await res.json();
       if (data.books) {
@@ -68,6 +69,7 @@ export default function Home() {
             </Box>
             <Typography variant="h1" component="h1" gutterBottom>
               What problem can I help you solve?
+              {problemText}
             </Typography>
           </Box>{" "}
           <form
@@ -100,7 +102,7 @@ export default function Home() {
             {recommendedBooks?.length > 0 && (
               <BookRecommendationTabs
                 recommendedBooks={recommendedBooks}
-                input={input}
+                problemText={problemText}
               />
             )}
             {error && (

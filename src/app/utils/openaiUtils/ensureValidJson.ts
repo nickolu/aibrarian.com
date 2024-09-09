@@ -9,10 +9,9 @@ async function ensureValidJson(
   objectProperties: object
 ): Promise<object | undefined> {
   try {
-    console.log("attempting to parse json");
     // Attempt to parse the JSON string directly
     const parsedJSON = JSON.parse(jsonString);
-    console.log("successfully parsed json");
+
     // Check if all required properties are present
     const requiredProperties = Object.keys(objectProperties);
     const hasAllProperties = requiredProperties.every(
@@ -20,10 +19,8 @@ async function ensureValidJson(
     );
 
     if (hasAllProperties) {
-      console.log("JSON is valid");
       return parsedJSON;
     } else {
-      console.log("JSON is missing properties");
       throw new Error("Failed to parse JSON");
     }
   } catch (error) {
@@ -60,6 +57,7 @@ async function ensureValidJson(
       const parsedArgs = JSON.parse(toolCall.function.arguments);
       return parsedArgs;
     }
+    console.error("Failed to parse JSON");
     throw new Error("Failed to parse JSON");
   }
 }
@@ -71,7 +69,7 @@ async function ensureValidJsonWithRecursiveRetries(
 ): Promise<object> {
   try {
     const result = await ensureValidJson(jsonString, objectProperties);
-    console.log("result", result);
+
     if (result) {
       return result;
     }
@@ -84,6 +82,7 @@ async function ensureValidJsonWithRecursiveRetries(
         retries - 1
       );
     }
+    console.error("Failed to parse JSON", error);
     throw error;
   }
 }

@@ -29,18 +29,15 @@ please only include valid json in your response and no other comments and limit 
 };
 
 export async function POST(request: Request) {
-  console.log("request", request);
   try {
     const { input } = await request.json();
-    console.log("input", input);
-    console.log("prompt", prompt(input));
+
     const completion = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [{ role: "user", content: prompt(input) }],
     });
 
     const response = completion.choices[0].message.content ?? "";
-    console.log("response", response);
 
     const validJson = await ensureValidJson(response, {
       books: {
