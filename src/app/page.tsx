@@ -69,7 +69,6 @@ export default function Home() {
             </Box>
             <Typography variant="h1" component="h1" gutterBottom>
               What problem can I help you solve?
-              {problemText}
             </Typography>
           </Box>{" "}
           <form

@@ -50,7 +50,6 @@ export default function BookRecommendationTabs({
     <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
       <Typography variant="h4" gutterBottom>
         The ai-brarian has found the following books to solve your problem:
-        {problemText}
       </Typography>
       <Box sx={{ width: "100%", bgcolor: "background.paper" }}>
         <Tabs
