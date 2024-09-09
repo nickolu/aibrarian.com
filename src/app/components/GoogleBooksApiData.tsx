@@ -1,7 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { Book } from "@/app/types";
 import {
-  CircularProgress,
   Grid2 as Grid,
   Accordion,
   AccordionSummary,
