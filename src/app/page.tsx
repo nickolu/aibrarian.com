@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   TextField,
   Button,
@@ -14,21 +14,28 @@ import BookRecommendationTabs from "./components/BookRecommendationTabs";
 import { Book } from "./types";
 import theme from "./theme";
 import "./globals.css";
+import Image from "next/image";
 
 export default function Home() {
   const [input, setInput] = useState("");
+  const [problemText, setProblemText] = useState("");
   const [recommendedBooks, setRecommendedBooks] = useState<Book[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setProblemText(input);
+  };
+
+  const fetchRecommendations = useCallback(async () => {
+    setRecommendedBooks([]);
     try {
       setIsLoading(true);
       const res = await fetch("/api/generateBookRecommendations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ input }),
+        body: JSON.stringify({ problemText }),
       });
       const data = await res.json();
       if (data.books) {
@@ -42,17 +49,38 @@ export default function Home() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [problemText]); // Add problemText to the dependency array
+
+  useEffect(() => {
+    if (problemText) {
+      fetchRecommendations();
+    }
+  }, [problemText, fetchRecommendations]);
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Container maxWidth="md">
         <Box sx={{ my: 4 }}>
-          <Typography variant="h1" component="h1" gutterBottom>
-            What problem can I help you solve?
-          </Typography>
-          <form onSubmit={handleSubmit}>
+          <Box display="flex" flexDirection="column" alignItems="center">
+            <Box mb={2}>
+              <Image
+                src="/images/aibrarian-logo.png"
+                alt="aibrarian-logo"
+                width={87}
+                height={123}
+              />
+            </Box>
+            <Typography variant="h1" component="h1" gutterBottom>
+              What problem can I help you solve?
+            </Typography>
+          </Box>{" "}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              setProblemText(input);
+            }}
+          >
             <TextField
               fullWidth
               multiline
