@@ -5,8 +5,16 @@ import { styled } from "@mui/material/styles";
 import MuiMarkdown from "mui-markdown";
 
 function bookSolutionPrompt(book: Book, input: string) {
-  return `based on the principles of the book ${book.title} by ${book.author}, how would you solve this problem: ${input}. 
-  please format your response as .md`;
+  return `based on the principles of the book ${book.title} by ${book.author}, how would you solve this problem: 
+  PROBLEM TEXT:  
+  ${input}
+
+  FORMATTING RULES:
+  1. please format your response as markdown (md)
+  2. please do not prefix the response with any commentary, just start with the solution
+  3. don't wrap anything other than code blocks in triple backticks
+  4. please do not include any markdown that is not part of the solution, such as \`\`\`md\`\`\` or \`\`\`json\`\`\`
+  `;
 }
 
 const MarkdownContainer = styled(Box)`
