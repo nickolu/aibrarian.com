@@ -9,6 +9,7 @@ import {
   Box,
   ThemeProvider,
   CssBaseline,
+  Link,
 } from "@mui/material";
 import BookRecommendationTabs from "./components/BookRecommendationTabs";
 import { Book } from "./types";
@@ -46,7 +47,7 @@ export default function Home() {
     } finally {
       setIsLoading(false);
     }
-  }, [problemText]); // Add problemText to the dependency array
+  }, [problemText]);
 
   useEffect(() => {
     if (problemText) {
@@ -110,6 +111,28 @@ export default function Home() {
                 {error}
               </Typography>
             )}
+          </Box>
+          {/* New Footer */}
+          <Box component="footer" sx={{ mt: 8, py: 3, textAlign: "center" }}>
+            <Typography variant="body2" color="text.secondary">
+              © {new Date().getFullYear()} AIbrarian. Powered by{" "}
+              <Link
+                href="https://openai.com"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                OpenAI
+              </Link>
+              . Created by{" "}
+              <Link
+                href="https://cunningjams.com"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                CunningJams
+              </Link>
+              .
+            </Typography>
           </Box>
         </Box>
       </Container>
