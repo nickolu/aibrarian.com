@@ -1,0 +1,25 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "editor.formatOnSave": true,
+        "html.format.indentHandlebars": true,
+        "workbench.colorCustomizations": {
+            "activityBar.background": "#2C3639",
+            "activityBar.foreground": "#DCD7C9",
+            "titleBar.activeBackground": "#2C3639",
+            "titleBar.activeForeground": "#DCD7C9"
+        },
+        "[javascript]": {
+            "editor.defaultFormatter": "esbenp.prettier-vscode",
+        },
+        "[javascriptreact]": {
+            "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        
+        "javascript.validate.enable": false,  
+    }
+}

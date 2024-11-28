@@ -21,10 +21,9 @@ async function ensureValidJson(
     if (hasAllProperties) {
       return parsedJSON;
     } else {
-      throw new Error("Failed to parse JSON");
+      throw new Error("Failed to parse JSON: missing required properties");
     }
   } catch (error) {
-    console.log("error parsing json", error);
     const functionDefinition = {
       name: "parse_json",
       description: "Parses a JSON string and returns a valid JSON object",
@@ -41,24 +40,34 @@ async function ensureValidJson(
         {
           role: "system",
           content:
-            "Please ensure the following input from the user is valid json, transforming it if necessary.",
+            "Please ensure the following input from the user is valid json, transforming it if necessary. Only respond with valid JSON.",
         },
         {
           role: "user",
           content: `Parse the following JSON string: ${jsonString}`,
         },
       ],
-      functions: [functionDefinition],
-      function_call: { name: "parse_json" },
+      tools: [
+        {
+          type: "function",
+          function: functionDefinition,
+        },
+      ],
+      tool_choice: { type: "function", function: { name: "parse_json" } },
     });
 
     const toolCall = response.choices[0].message.tool_calls?.[0];
+
     if (toolCall && toolCall.function.arguments) {
-      const parsedArgs = JSON.parse(toolCall.function.arguments);
+      // Strip triple or single backticks if present
+      const cleanedArgs = toolCall.function.arguments.replace(
+        /^(`{1,3})|(`{1,3})$/g,
+        ""
+      );
+      const parsedArgs = JSON.parse(cleanedArgs);
       return parsedArgs;
     }
-    console.error("Failed to parse JSON");
-    throw new Error("Failed to parse JSON");
+    throw new Error("Failed to parse JSON: missing tool call or arguments");
   }
 }
 
@@ -73,7 +82,9 @@ async function ensureValidJsonWithRecursiveRetries(
     if (result) {
       return result;
     }
-    throw new Error("Failed to parse JSON");
+    throw new Error(
+      "Failed to parse JSON: can't ensure valid json after retries"
+    );
   } catch (error) {
     if (retries > 0) {
       return await ensureValidJsonWithRecursiveRetries(
