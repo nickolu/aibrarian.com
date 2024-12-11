@@ -17,6 +17,23 @@ import theme from "./theme";
 import "./globals.css";
 import Image from "next/image";
 
+function isBookValid(book: Book) {
+  if (!book.title) {
+    console.error("Invalid Book: No title", book);
+    return false;
+  }
+  if (!book.author) {
+    console.error("Invalid Book: No author", book);
+    return false;
+  }
+  return true;
+}
+
+function isBookDataValid(books: Book[]) {
+  console.log("books", books);
+  return books && books.every(isBookValid);
+}
+
 export default function Home() {
   const [input, setInput] = useState("");
   const [problemText, setProblemText] = useState("");
@@ -36,10 +53,18 @@ export default function Home() {
         body: JSON.stringify({ input: problemText }),
       });
       const data = await res.json();
-      if (data.books) {
+      if (!data.books) {
+        console.error("No book data in response:", data);
+        setError("Unable to generate recommendations");
+        return;
+      }
+      if (isBookDataValid(data.books)) {
+        console.log('setting book data', data.books);
         setRecommendedBooks(data.books);
       } else {
+        console.error("Invalid book data:", data.books);
         setError("Unable to generate recommendations");
+        setRecommendedBooks([]);
       }
     } catch (error) {
       console.error("Error:", error);

@@ -47,32 +47,30 @@ export async function POST(request: Request) {
       console.log("determined input is safe because: ", safeInput.reason);
     }
 
+    const userInput = prompt(input);
     const completion = await openai.chat.completions.create({
       model: "gpt-4o",
-      messages: [{ role: "user", content: prompt(input) }],
+      messages: [{ role: "user", content: userInput }],
     });
 
     const response = completion.choices[0].message.content ?? "";
-
+    
     const validJson = await ensureValidJson(response, {
       books: {
         type: "array",
         items: {
           type: "object",
           properties: {
-            book: {
-              type: "array",
-              items: {
-                type: "object",
-                properties: {
-                  title: { type: "string" },
-                  author: { type: "string" },
-                },
-                required: ["title", "author"],
-              },
+            title: {
+              type: "string",
+              description: "The title of the book",
+            },
+            author: {
+              type: "string",
+              description: "The author of the book",
             },
           },
-          required: ["book"],
+          required: ["title", "author"],
         },
       },
     });
